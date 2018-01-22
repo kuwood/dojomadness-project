@@ -36,7 +36,19 @@ app.get(`/api/heroes`, (req, res) => {
     .sort(`_id`)
     .skip((limit * page) - limit)
     .limit(limit)
-    .then(heroes => res.json(heroes))
+    .then(heroes => {
+      Hero
+        .count()
+        .then(count => {
+          const data = {
+            heroes,
+            page,
+            pages: Math.ceil(count / limit)
+          };
+          res.json(data);
+        })
+        .catch(e => console.log(e));
+    })
     .catch(e => console.log(e));
 })
 
