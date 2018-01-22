@@ -9,6 +9,17 @@ class App extends Component {
     }
   }
 
+  componentDidMount() {
+    this.fetchHeroes()
+    .then(data => console.log(data))
+  }
+
+  fetchHeroes(page) {
+    return fetch(`/api/heroes?p=${page}`)
+      .then(res => res.json())
+      .catch(e => console.log(e));
+  }
+
   render() {
     return (
       <div className="App">
