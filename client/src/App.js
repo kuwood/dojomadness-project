@@ -8,16 +8,22 @@ class App extends Component {
     super(props);
     this.state = {
       loading: true,
-      heroes: []
+      heroes: [],
+      page: 0,
+      pages: 0
     };
   }
 
   componentDidMount() {
-    this.fetchHeroes()
-    .then(heroes => this.setState({
-      loading: false,
-      heroes
-    }));
+    this.fetchHeroes(1)
+    .then(data => {
+      this.setState(prev => ({
+        loading: false,
+        heroes: [...prev.heroes, ...data.heroes],
+        page: data.page,
+        pages: data.pages
+      }))
+    });
   }
 
   fetchHeroes(page) {
