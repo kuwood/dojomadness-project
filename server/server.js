@@ -28,8 +28,15 @@ Hero.count().then(number => {
 .catch(e => console.log(e));
 
 app.get(`/api/heroes`, (req, res) => {
+  const limit = 6;
+  const page = parseInt(req.query.p, 10) || 1;
+
   Hero.find({})
-    .then(data => res.json(data))
+    .find({})
+    .sort(`_id`)
+    .skip((limit * page) - limit)
+    .limit(limit)
+    .then(heroes => res.json(heroes))
     .catch(e => console.log(e));
 })
 
