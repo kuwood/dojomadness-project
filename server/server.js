@@ -6,6 +6,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.MONGO_URL_LOCAL).catch(error => {
+  console.error(`MongoDB connection error: ${error}`);
+});
+
 app.get(`/api/heroes`, (req, res) => {
   console.log('found heroes');
 })
