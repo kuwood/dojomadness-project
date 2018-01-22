@@ -1,0 +1,32 @@
+.card {
+  box-sizing: border-box;
+  width: 300px;
+  height: 200px;
+  border: 1px solid #333;
+  box-shadow: #333 3px 4px 13px;
+  padding: 20px;
+  margin: 10px;
+  color: white;
+  background-color: #4c0079;
+  background-size: cover;
+}
+
+.card-header {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.card-portrait {
+  background-color: #d4c76a;
+  height: 100px;
+  width: 100px;
+  clip-path: polygon(50% 18%, 82% 36%, 81% 74%, 50% 92%, 18% 73%, 18% 37%);
+  margin: -20px 0 0 -20px;
+}
+
+.card-text {
+  height: 74px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: 0;
+}
