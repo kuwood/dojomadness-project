@@ -54,8 +54,14 @@ class App extends Component {
       .catch(e => console.log(e));
   }
 
-  handleScroll() {
-    console.log('test');
+  handleScroll = () => {
+    // determine if we have scrolled to the bottom
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      if (this.state.page < this.state.pages && !this.state.loading) {
+        this.setState({loading: true});
+        this.fetchHeroes(this.state.page + 1);
+      }
+    } 
   }
 
   render() {
