@@ -15,21 +15,47 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchHeroes(1)
-    .then(data => {
-      this.setState(prev => ({
-        loading: false,
-        heroes: [...prev.heroes, ...data.heroes],
-        page: data.page,
-        pages: data.pages
-      }))
+    window.addEventListener('scroll', this.handleScroll);
+
+    // Make sure large screens have the inital scroll bar
+    this.fetchHeroes(1)    
+    .then(() => {
+      if (!this.state.loading && window.innerHeight > 600) {
+        this.fetchHeroes(2);
+      }
+    })
+    .then(() => {
+      if (!this.state.loading && window.innerHeight > 900) {
+        this.fetchHeroes(3);
+      }
+    })
+    .then(() => {
+      if (!this.state.loading && window.innerHeight > 1200) {
+        this.fetchHeroes(4);
+      }
     });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
   }
 
   fetchHeroes(page) {
     return fetch(`/api/heroes?p=${page}`)
       .then(res => res.json())
+      .then(data => {
+        this.setState(prev => ({
+          loading: false,
+          heroes: [...prev.heroes, ...data.heroes],
+          page: data.page,
+          pages: data.pages
+        }))
+      })
       .catch(e => console.log(e));
+  }
+
+  handleScroll() {
+    console.log('test');
   }
 
   render() {
