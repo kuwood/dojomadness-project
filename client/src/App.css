@@ -58,3 +58,39 @@ html {
   justify-content: center;
   color: #333;
 }
+
+.header-search {
+  align-items: center;  
+}
+
+.header-search-input {
+  background: none;
+  border: none;
+  border-bottom: 1px solid white;
+  color: white;
+  position: absolute;
+  width: 200px;
+  left: calc(50% - 100px);
+  top: 18px;
+  outline-color: white;
+  padding: 5px 5px 2px 5px;
+}
+
+@media screen and (max-width: 750px) {
+  .App-header {
+    height: 120px;
+    text-align: center;
+    align-items: initial;
+    flex-direction: column;
+  }
+  .App-title {
+    flex: 1 1 50%;
+    padding-left: 0; 
+  }
+  .header-search {
+    flex: 1 1 50%;
+  }
+  .header-search-input {
+    position: initial;
+  }
+}

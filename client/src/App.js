@@ -79,6 +79,9 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">Overwatch Heroes</h1>
+          <div className="header-search">
+            <input className="header-search-input" type="text" placeholder="Hero Search"></input>
+          </div>
         </header>
         <div className="card-container">
           {heroes}
