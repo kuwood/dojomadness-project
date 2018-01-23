@@ -10,7 +10,9 @@ class App extends Component {
       loading: true,
       heroes: [],
       page: 0,
-      pages: 0
+      pages: 0,
+      searchVal: '',
+      filteredHeroes: []
     };
   }
 
@@ -49,7 +51,10 @@ class App extends Component {
           heroes: [...prev.heroes, ...data.heroes],
           page: data.page,
           pages: data.pages
-        }))
+        }));
+        if (!this.state.searchVal) {
+          this.setState(prev => ({filteredHeroes: this.state.heroes}));
+        };
       })
       .catch(e => console.log(e));
   }
@@ -64,8 +69,16 @@ class App extends Component {
     } 
   }
 
+  filterHeroes = event => {
+    const {heroes, page, pages} = this.state;
+    const searchVal = event.target.value.toLowerCase();
+    this.setState({searchVal});
+    const filteredHeroes = heroes.filter(hero => hero.attributes.slug.includes(searchVal));
+    this.setState({filteredHeroes});
+  }
+
   render() {
-    const heroes = this.state.heroes.map((hero, i) => (
+    const filteredHeroes = this.state.filteredHeroes.map((hero, i) => (
       <Card
         key={i}
         portrait={hero.attributes.image_portrait}
@@ -80,11 +93,11 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">Overwatch Heroes</h1>
           <div className="header-search">
-            <input className="header-search-input" type="text" placeholder="Hero Search"></input>
+            <input className="header-search-input" type="text" placeholder="Hero Search" onChange={this.filterHeroes}></input>
           </div>
         </header>
         <div className="card-container">
-          {heroes}
+          {filteredHeroes}
         </div>
         {this.state.loading && <p className='loading'>Loading...</p>}
       </div>
