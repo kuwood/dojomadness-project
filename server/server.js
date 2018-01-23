@@ -1,4 +1,5 @@
 require(`dotenv`).config();
+const path = require('path');
 const express = require(`express`);
 const bodyParser = require(`body-parser`);
 const mongoose = require(`mongoose`);
@@ -11,21 +12,28 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+const NODE_ENV = process.env.NODE_ENV || 'dev'
+const dbURL = NODE_ENV === 'prod' ? process.env.MONGO_URL_PROD : process.env.MONGO_URL_LOCAL
+
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGO_URL_LOCAL).catch(error => {
+mongoose.connect(dbURL).catch(error => {
   console.error(`MongoDB connection error: ${error}`);
 });
 
-// populate local DB with mockData
-Hero.count().then(number => {
-  if (number > 0) {
-    console.log(`Found ${number} Hero documents.`);
-  } else {
-    console.log(`Adding Heroes to DB`);
-    populateDB(mockData.data);
-  }
-})
-.catch(e => console.log(e));
+if (NODE_ENV === 'dev') {
+  // populate local DB with mockData
+  Hero.count().then(number => {
+    if (number > 0) {
+      console.log(`Found ${number} Hero documents.`);
+    } else {
+      console.log(`Adding Heroes to DB`);
+      populateDB(mockData.data);
+    }
+  })
+  .catch(e => console.log(e));
+}
+
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 app.get(`/api/heroes`, (req, res) => {
   const limit = 6;
@@ -58,6 +66,10 @@ app.get(`/api/heroes/search`, function(req, res) {
     .$where(`this.attributes.slug.indexOf("${query}") !== -1`)
     .then(data => res.json(data))
     .catch(e => console.log(e))
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
 const server = app.listen(process.env.PORT || 8080, function () {
