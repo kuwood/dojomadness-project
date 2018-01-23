@@ -14,6 +14,7 @@ class App extends Component {
       searchVal: '',
       filteredHeroes: []
     };
+    this.queryTimeout = null;
   }
 
   componentDidMount() {
@@ -73,8 +74,32 @@ class App extends Component {
     const {heroes, page, pages} = this.state;
     const searchVal = event.target.value.toLowerCase();
     this.setState({searchVal});
-    const filteredHeroes = heroes.filter(hero => hero.attributes.slug.includes(searchVal));
-    this.setState({filteredHeroes});
+    if (page === pages) {
+      const filteredHeroes = heroes.filter(hero => hero.attributes.slug.includes(searchVal));
+      this.setState({filteredHeroes});
+    } else {
+      // backend search
+      let to = this.queryTimeout;
+      clearTimeout(to);
+      this.queryTimeout = setTimeout(function() {
+        this.setState({loading: true});
+        this.heroSearch();
+      }.bind(this), 500);
+    }
+  }
+
+  heroSearch = () => {
+    const query = this.state.searchVal;
+    if (query) {
+      return fetch(`/api/heroes/search?q=${query}`)
+        .then(res => res.json())
+        .then(data => {
+          this.setState({filteredHeroes: data, loading: false});
+        })
+        .catch(e => console.log(e));
+    } else {
+      this.setState({filteredHeroes: this.state.heroes, loading: false});
+    }
   }
 
   render() {

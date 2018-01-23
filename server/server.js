@@ -52,6 +52,14 @@ app.get(`/api/heroes`, (req, res) => {
     .catch(e => console.log(e));
 })
 
+app.get(`/api/heroes/search`, function(req, res) {
+  const query = req.query.q;
+  Hero
+    .$where(`this.attributes.slug.indexOf("${query}") !== -1`)
+    .then(data => res.json(data))
+    .catch(e => console.log(e))
+});
+
 const server = app.listen(process.env.PORT || 8080, function () {
   console.log(`Listening on port ${server.address().port}`);
 });
